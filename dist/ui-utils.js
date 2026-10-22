@@ -3,7 +3,7 @@ export const format = value => {const n=Number(value),seconds=Number.isFinite(n)
 export const normalize = value => String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 export const accent = value => /^#[0-9a-f]{6}$/i.test(value||'')?value:'#353535';
 export const audioTypes={mp3:'audio/mpeg',flac:'audio/flac',wav:'audio/wav',m4a:'audio/mp4',ogg:'audio/ogg'};
-export const audioExtension=t=>{const ext=(t.audio_path||t.name||'').split('.').pop().toLowerCase();return audioTypes[ext]?ext:'mp3';};
+export const audioExtension=t=>{let source=t.audio_path||t.name||'';try{if(/^https:\/\//i.test(source))source=new URL(source).pathname;}catch{}const ext=source.split('.').pop().toLowerCase();return audioTypes[ext]?ext:'mp3';};
 export function downloadName(t){return `KYROSHIX - ${t.title} (${t.remix||'Remix'}).${audioExtension(t)}`.replace(/[\\/:*?"<>|\x00-\x1f]/g,'-');}
 export function legacyCover(value){return ['remember','legends','darkness','blindfold'].includes(value)?`cover-${value}`:'';}
 export function filterTracks(tracks,{filter='all',query='',favoritesOnly=false,favorites=new Set(),sort='featured'}={}){

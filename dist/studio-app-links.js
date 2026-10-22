@@ -1,0 +1,2 @@
+const panel=document.getElementById('studio-content');
+if(panel){const links=document.createElement('div');links.className='studio-app-launchers';links.innerHTML='<a class="studio-app-link" href="/apps/music/"><strong>App de música</strong><span>Publique uma faixa usando um link HTTPS direto.</span><b>Abrir app ↗</b></a><a class="studio-app-link" href="/apps/video/"><strong>App de vídeos</strong><span>Publique vídeos por link e controle sua visibilidade.</span><b>Abrir app ↗</b></a>';panel.prepend(links);}

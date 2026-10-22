@@ -53,6 +53,7 @@ export async function createDataClient(getToken) {
     comments(track,offset=0) { return request(`/rest/v1/krs_comments?track_id=eq.${encodeURIComponent(track)}&select=*,profile:krs_profiles(display_name,avatar_path,accent,updated_at)&order=created_at.desc,id.desc&limit=30&offset=${offset}`,{publicRead:true}); },
     media(path,version='') {
       if (!path) return '';
+      if (typeof path==='string'&&/^https:\/\//i.test(path)) { try { const url=new URL(path); if(url.protocol==='https:'&&!url.username&&!url.password&&url.hostname.includes('.')&&!url.hostname.endsWith('.localhost')&&!url.hostname.endsWith('.local')&&!url.hostname.endsWith('.internal')) return url.href; } catch {} return ''; }
       if (/^assets\/(remember|legends|darkness|blindfold)\.mp3$/.test(path)) return '/'+path;
       if (/^videos\/[a-z0-9-]+\/[a-z0-9-]+\.(mp4|webm)$/.test(path)) return `${base}/storage/v1/object/public/kyroshix-video/${path}`;
       if (!/^(tracks\/[a-z0-9-]+\/[a-z0-9-]+\.(mp3|flac|wav|m4a|ogg|webp)|profiles\/[^/]+\/(avatar|banner)\.webp)$/.test(path)) return '';

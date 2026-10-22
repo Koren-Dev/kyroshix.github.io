@@ -15,6 +15,7 @@
     "test:navigation": "node tests/navigation-theme.mjs",
     "test:worker": "node tests/worker.mjs",
     "test:auth-ui": "node tests/auth-ui.cjs",
+    "test:studio-apps": "node tests/studio-apps.cjs",
     "test:auth": "node tests/auth-regressions.mjs && node tests/auth-deployment.mjs && node tests/access.mjs",
     "check:auth": "node scripts/check-auth.mjs"
   },
