@@ -186,9 +186,9 @@ export function mountAuth(doc) {
       el('profile-name').textContent = user.displayName || 'Sua frequência';
       el('profile-email').textContent = user.email || user.phoneNumber || '';
       el('profile-initial').textContent = Array.from(user.displayName || user.email || 'K')[0].toUpperCase();
-      el('profile-verification').hidden = !!user.emailVerified || !!user.phoneNumber;
+      el('profile-verification').hidden = !user.email || !!user.emailVerified;
       el('profile-verified').hidden = !user.emailVerified && !user.phoneNumber;
-      el('profile-verified').textContent = user.phoneNumber && !user.email ? 'Telefone confirmado' : 'E-mail confirmado';
+      el('profile-verified').textContent = user.email && user.emailVerified ? 'E-mail confirmado' : 'Telefone confirmado';
     } else {
       el('profile-name').textContent = '';
       el('profile-email').textContent = '';
@@ -232,6 +232,13 @@ export function mountAuth(doc) {
     }
   }
 
+  function domainNotice(code) {
+    if (!['auth/unauthorized-domain', 'auth/unauthorized-continue-uri'].includes(code)) return '';
+    let hostname = '';
+    try { hostname = new URL(doc.defaultView.location.href).hostname; } catch {}
+    return hostname ? ' O responsável pelo site precisa autorizar ' + hostname + ' no Firebase Authentication → Configurações → Domínios autorizados.' : '';
+  }
+
   async function run(action) {
     if (busy) return;
     if (!client) { message('O serviço de contas está indisponível. Nenhum dado foi enviado.', true); return; }
@@ -241,7 +248,7 @@ export function mountAuth(doc) {
     try { await action(); }
     catch (error) {
       const code = typeof error?.code === 'string' && /^auth\/[a-z0-9-]{1,64}$/.test(error.code) ? error.code : '';
-      message(error?.publicMessage || errors[code] || (code ? `Falha no acesso (${code}). Confira as configurações do Firebase.` : 'Não foi possível concluir. Confira a conexão e tente novamente.'), true);
+      message(error?.publicMessage || (errors[code] ? errors[code] + domainNotice(code) : '') || (code ? `Falha no acesso (${code}). Confira as configurações do Firebase.` : 'Não foi possível concluir. Confira a conexão e tente novamente.'), true);
     }
     finally { busy = false; controls(); }
   }
