@@ -1,0 +1,13 @@
+// Preview/staging only. The worker name is deliberately NOT "releases" (production).
+// Deploying this file never touches https://releases.kyroshixcorp.workers.dev/.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "kyroshix-preview",
+  "compatibility_date": "2026-10-07",
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "none"
+  }
+}

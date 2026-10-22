@@ -129,7 +129,7 @@ assert.equal(automatic.root.dataset.theme, 'dark'); assert.equal(automatic.root.
 automatic.mount(); assert.equal(automatic.attributes['aria-checked'], 'true');
 automatic.system(false); assert.equal(automatic.root.dataset.theme, 'light');
 automatic.click(); assert.equal(automatic.stored(), 'dark'); assert.equal(automatic.attributes['aria-checked'], 'true');
-assert.equal(automatic.button.title, 'Ativar tema claro'); assert.equal(automatic.attrs.content, '#1d1d25');
+assert.equal(automatic.button.title, 'Ativar tema claro'); assert.equal(automatic.attrs.content, '#050506');
 assert(automatic.classes.has('theme-changing')); automatic.finish(); assert(!automatic.classes.has('theme-changing'));
 automatic.system(false); assert.equal(automatic.root.dataset.theme, 'dark');
 automatic.storage('light'); assert.equal(automatic.root.dataset.theme, 'light');
@@ -144,3 +144,4 @@ const privateMode = theme({blockedStorage:true}); privateMode.mount(); privateMo
 assert.equal(privateMode.root.dataset.theme,'dark'); privateMode.system(false); assert.equal(privateMode.root.dataset.theme,'dark');
 
 console.log('PASS: deep links, stable IDs after title edits, legacy links, browser history, OAuth query preservation, native download/new-tab links; pre-paint theme, saved/system preferences, cross-tab changes, accessible switch and reduced motion.');
+

@@ -11,7 +11,7 @@ DEFAULT_FILES = [
     'index.html', 'app.js', 'experience.css', 'atelier.css', 'listening-room.js',
     'music-player.js', 'video-player.js', 'platform.js', 'router.js', 'theme.js',
     'themes.css', 'auth.js', 'auth-controller.js', 'firebase-client.js',
-    'access-policy.js', 'account.css', 'data-client.js', 'drm.js',
+    'access-policy.js', 'account.css', 'brand-red.css', 'data-client.js', 'drm.js',
 ]
 TYPES = {
     '.html': 'text/html; charset=utf-8',
@@ -69,3 +69,4 @@ metadata = {
     json.dumps(metadata, indent=2) + '\n', encoding='utf-8')
 print(json.dumps({'output': str(args.output), 'routes': routes,
                   'text_bytes': sum(f['size'] for f in files.values())}))
+

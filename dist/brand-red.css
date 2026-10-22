@@ -1,0 +1,80 @@
+/* KYROSHIX brand layer: red and black identity on top of the existing layout.
+   Loaded last so it only recolours; structure, spacing and behaviour are untouched.
+   Logos keep their original artwork. */
+:root {
+  --kx-red: #e10600; --kx-red-hover: #ff2b1c; --kx-red-deep: #8f0400;
+  --kx-black: #0a0a0b; --kx-coal: #141416; --kx-graphite: #1d1d21;
+  --bg: #ececee; --panel: #ffffff; --surface: #f2f1f2; --text: #121214;
+  --muted: #5d5d66; --line: #e2e1e4; --red: #c80500; --ink: #121214;
+  --play-accent: var(--kx-red);
+  --waveform-start: #e10600; --waveform-end: #5a0200;
+}
+html { background: #ececee; }
+body { background: radial-gradient(ellipse at 50% 0, #ffffff 0, transparent 58%), radial-gradient(ellipse at 100% 65%, #f4d9d8 0, transparent 55%), #ececee; }
+::selection { background: var(--kx-red); color: #fff; }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible,
+textarea:focus-visible, summary:focus-visible { outline-color: var(--kx-red); }
+
+/* Library, player and spotlight are black in both themes. */
+.sidebar, html[data-theme=dark] .sidebar { background: var(--kx-black); color: #f4f4f5; border-color: #26262b; scrollbar-color: #4a4a52 transparent; }
+.sidebar .nav-item.active, html[data-theme=dark] .sidebar .nav-item.active { color: #fff; background: #2a0907; box-shadow: inset 3px 0 0 var(--kx-red); }
+.sidebar .nav-item.active > span, html[data-theme=dark] .sidebar .nav-item.active > span { color: #ff6a5f; }
+.sidebar .nav-item:hover, html[data-theme=dark] .sidebar .nav-item:hover { background: #1c1c20; color: #fff; }
+.player, html[data-theme=dark] .player { background: #0b0b0df5; color: #fafafa; border-color: #2a2a30; box-shadow: 0 17px 43px #0005; }
+.player .progress { color: #b9b9c0; }
+.player .icon-button { color: #e4e4e8; }
+.player .icon-button[aria-pressed=true] { color: var(--kx-red-hover); background: #ffffff0c; }
+.spotlight { background: var(--kx-black); box-shadow: 0 17px 30px #e1060022; }
+.spotlight-art::after { background: linear-gradient(90deg, #0a0a0b, #0a0a0b00 80%); }
+.spotlight-copy .eyebrow { color: #ff6a5f; }
+.spotlight-copy h2 { color: #fff; }
+.spotlight-copy p { color: #c9c9cf; }
+.spotlight-actions .secondary { color: #f1f1f3; }
+
+/* Red accents replace the previous yellow ones. */
+.player-play, .now-play, .card-play, .video-center,
+html[data-theme=dark] .player-play, html[data-theme=dark] .now-play,
+.spotlight-actions .primary, html[data-theme=dark] .primary {
+  color: #fff; background: var(--kx-red); border-color: var(--kx-red);
+}
+.player-play:hover, .now-play:hover, .card-play:hover,
+.spotlight-actions .primary:hover, html[data-theme=dark] .primary:hover {
+  color: #fff; background: var(--kx-red-hover); border-color: var(--kx-red-hover);
+}
+.primary { background: var(--kx-black); border-color: var(--kx-black); color: #fff; }
+.primary:hover { background: var(--kx-red); border-color: var(--kx-red); }
+.player input[type=range], .video-controls input[type=range] { accent-color: var(--kx-red); }
+.player input[type=range]::-webkit-slider-thumb { background: var(--kx-red); border-color: var(--kx-red); }
+.player input[type=range]::-moz-range-progress { background: var(--kx-red); }
+.player input[type=range]::-moz-range-thumb { background: var(--kx-red); border-color: var(--kx-red); }
+.filters button.active { color: #fff; background: var(--kx-red); border-color: var(--kx-red); }
+.account-trigger, .account-trigger:hover, html[data-theme=dark] .account-trigger { color: #fff; background: var(--kx-red); }
+.account-trigger.has-account-avatar { background: var(--surface); }
+.detail-description, .profile-card, .video-card, .studio-stats > div { background: #f6f5f6; border-color: #e4e2e5; }
+.related-track:hover { background: #f8eceb; }
+.channel-links > a, .channel-links > button, .reaction { color: #b00400; border-color: #f0c9c6; background: #fdf0ef; }
+.empty-state, .feature-empty { background: #f6f5f6; border-color: #e4e2e5; }
+
+/* Dark theme: true black surfaces. */
+html[data-theme=dark] {
+  background: #050506;
+  --bg: #050506; --panel: #111113; --surface: #1a1a1e; --text: #f4f4f6;
+  --muted: #a7a7b0; --line: #2b2b31; --red: #ff3b2f; --ink: #ff3b2f;
+  --waveform-start: #ff3b2f; --waveform-end: #6b0b06;
+}
+html[data-theme=dark] body { background: radial-gradient(ellipse at 20% 0, #2a0605, transparent 60%), #050506; }
+html[data-theme=dark] ::selection { color: #fff; background: var(--kx-red); }
+html[data-theme=dark] .icon-button.active, html[data-theme=dark] .icon-button[aria-pressed=true] { color: #ff4a3e; background: #2a0907; }
+html[data-theme=dark] .filters button.active { color: #fff; background: var(--kx-red); border-color: var(--kx-red); }
+html[data-theme=dark] .now-panel-tabs > button[aria-selected=true],
+html[data-theme=dark] .queue-item.active,
+html[data-theme=dark] .mobile-nav a.active { color: #ff4a3e; background: #2a0907; }
+html[data-theme=dark] .feature-empty, html[data-theme=dark] .empty-state { background: #151518; border-color: #2b2b31; }
+html[data-theme=dark] .detail-description, html[data-theme=dark] .profile-card,
+html[data-theme=dark] .video-card, html[data-theme=dark] .studio-stats > div { background: #141417; border-color: #2b2b31; }
+html[data-theme=dark] .channel-links > a, html[data-theme=dark] .channel-links > button,
+html[data-theme=dark] .reaction { color: #ff6a5f; border-color: #4a1210; background: #1e0a09; }
+
+/* Account dialog keeps its layout; accent becomes brand red. */
+#account-dialog { --access-accent: #c80500; --access-button: #0a0a0b; }
+html[data-theme=dark] #account-dialog { --access-bg: #0d0d0f; --access-field: #18181b; --access-line: #2e2e34; --access-tab: #18181b; --access-accent: #ff4a3e; }

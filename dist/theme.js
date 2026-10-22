@@ -11,7 +11,7 @@
       button.setAttribute('aria-checked', String(dark));
       button.title = dark ? 'Ativar tema claro' : 'Ativar tema escuro';
     });
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#1d1d25' : '#fbfaf7');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#050506' : '#0a0a0b');
   }
   function apply(theme, animated = false) {
     clearTimeout(timer);
@@ -41,3 +41,4 @@
     apply(preference || (system.matches ? 'dark' : 'light'));
   });
 })();
+
