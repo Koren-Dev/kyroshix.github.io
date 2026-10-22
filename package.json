@@ -14,10 +14,12 @@
     "test:discovery": "node tests/discovery.cjs",
     "test:navigation": "node tests/navigation-theme.mjs",
     "test:worker": "node tests/worker.mjs",
-    "test:auth-ui": "node tests/auth-ui.cjs"
+    "test:auth-ui": "node tests/auth-ui.cjs",
+    "test:auth": "node tests/auth-regressions.mjs && node tests/auth-deployment.mjs && node tests/access.mjs",
+    "check:auth": "node scripts/check-auth.mjs"
   },
   "devDependencies": {
     "@electric-sql/pglite": "0.3.14",
-    "playwright": "1.51.1"
+    "playwright": "1.55.1"
   }
 }

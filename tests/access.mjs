@@ -296,3 +296,26 @@ const dependencies = { loadSdk: async () => [{ initializeApp: () => ({}) }, sdk]
   await client.sendEmailLink('listener@example.test'); assert.equal(sdkCalls.at(-1)[0], 'email-link');
 }
 console.log('PASS: first-visit signup, restored sessions, blocked storage, typed-form race, callbacks, pending-provider gates, synchronous OAuth dispatch, duplicate prevention, password/reset, UID linking, SMS validation/cancellation, stale step-up results and Firebase adapter scopes/persistence. Network authentication and browser layout were not exercised.');
+
+// Phone verification must never imply verification of an attached email address.
+{
+  const {doc,client} = fixture();
+  await client.observer({...account, emailVerified:false, phoneNumber:'+5511999999999'});
+  assert.equal(doc.el('profile-verified').textContent, 'Telefone confirmado');
+  assert.equal(doc.el('profile-verification').hidden, false);
+  await client.observer({...account, email:null, emailVerified:false, phoneNumber:'+5511999999999'});
+  assert.equal(doc.el('profile-verification').hidden, true);
+  await client.observer(account);
+  assert.equal(doc.el('profile-verified').textContent, 'E-mail confirmado');
+}
+for (const code of ['auth/unauthorized-domain', 'auth/unauthorized-continue-uri']) {
+  const {doc,client} = fixture({href:'https://kyroshix-preview.kyroshixcorp.workers.dev/inicio?secret=hidden'}, {
+    async google() { throw {code, message:'raw-token-never-display'}; }
+  });
+  await client.observer(null);
+  await doc.method('google.com').click();
+  assert.match(doc.el('auth-message').textContent, /kyroshix-preview\.kyroshixcorp\.workers\.dev/);
+  assert(!/secret|hidden|raw-token/.test(doc.el('auth-message').textContent));
+  assert.equal(doc.el('auth-submit').disabled, false);
+}
+console.log('PASS: verified email/phone labels and actionable domain errors without query strings or raw SDK messages.');

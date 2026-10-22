@@ -49,7 +49,9 @@ const fakeAuth=`export async function createFirebaseClient(_config,options={}){
    assert(await page.locator('#'+id).isVisible(),`${id} is shown in the entry screen`);
    assert.equal(await page.locator('#'+id).getAttribute('aria-disabled'),'true',`${id} is inactive until configured`);
   }
-  await page.locator('#auth-instagram').click();assert.match(await page.locator('#auth-message').innerText(),/Instagram não está disponível/);
+  // Unavailable providers intentionally accept a pointer click to explain setup;
+  // Playwright treats aria-disabled as disabled, so bypass only that actionability gate.
+  await page.locator('#auth-instagram').click({force:true});assert.match(await page.locator('#auth-message').innerText(),/Instagram não está disponível/);
   await page.locator('[data-auth-mode="signup"]').click();
   assert.equal(await page.locator('#auth-submit').innerText(),'Criar minha conta');
   assert(await page.locator('#auth-name-field').isVisible());
