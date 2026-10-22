@@ -1,5 +1,5 @@
 export const esc = value => String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-export const format = value => {const seconds=Math.max(0,Number(value)||0);return `${Math.floor(seconds/60)}:${String(Math.floor(seconds%60)).padStart(2,'0')}`;};
+export const format = value => {const n=Number(value),seconds=Number.isFinite(n)?Math.max(0,n):0;return `${Math.floor(seconds/60)}:${String(Math.floor(seconds%60)).padStart(2,'0')}`;};
 export const normalize = value => String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 export const accent = value => /^#[0-9a-f]{6}$/i.test(value||'')?value:'#353535';
 export const audioTypes={mp3:'audio/mpeg',flac:'audio/flac',wav:'audio/wav',m4a:'audio/mp4',ogg:'audio/ogg'};
@@ -7,8 +7,8 @@ export const audioExtension=t=>{const ext=(t.audio_path||t.name||'').split('.').
 export function downloadName(t){return `KYROSHIX - ${t.title} (${t.remix||'Remix'}).${audioExtension(t)}`.replace(/[\\/:*?"<>|\x00-\x1f]/g,'-');}
 export function legacyCover(value){return ['remember','legends','darkness','blindfold'].includes(value)?`cover-${value}`:'';}
 export function filterTracks(tracks,{filter='all',query='',favoritesOnly=false,favorites=new Set(),sort='featured'}={}){
- const rows=tracks.filter(t=>(filter==='all'||t.tags.includes(filter))&&(!favoritesOnly||favorites.has(t.id))&&(!query||normalize(`${t.title} ${t.artists} ${t.remix}`).includes(normalize(query))));
- if(sort==='title')rows.sort((a,b)=>a.title.localeCompare(b.title,'pt-BR'));
+ const rows=tracks.filter(t=>(filter==='all'||(Array.isArray(t.tags)&&t.tags.includes(filter)))&&(!favoritesOnly||favorites.has(t.id))&&(!query||normalize(`${t.title} ${t.artists} ${t.remix}`).includes(normalize(query))));
+ if(sort==='title')rows.sort((a,b)=>String(a.title||'').localeCompare(String(b.title||''),'pt-BR'));
  if(sort==='duration')rows.sort((a,b)=>Number(a.duration)-Number(b.duration));
  if(sort==='recent')rows.sort((a,b)=>String(b.created_at||'').localeCompare(a.created_at||''));
  return rows;

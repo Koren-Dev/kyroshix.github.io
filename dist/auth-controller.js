@@ -15,7 +15,14 @@ const errors = {
   'auth/cancelled-popup-request': 'Já existe uma janela de acesso aberta. Conclua o acesso nela.',
   'auth/popup-blocked': 'Permita pop-ups para este site. Você também pode entrar com e-mail e senha.',
   'auth/unauthorized-domain': 'Este endereço ainda não foi autorizado para login.',
-  'auth/operation-not-allowed': 'Este método de acesso ainda não está disponível.',
+  'auth/operation-not-allowed': 'Este método não está habilitado no Firebase. Ative-o em Authentication → Método de login.',
+  'auth/unauthorized-continue-uri': 'O domínio do site precisa ser autorizado no Firebase para enviar links de confirmação.',
+  'auth/invalid-continue-uri': 'O endereço de confirmação de e-mail é inválido. Confira os domínios autorizados no Firebase.',
+  'auth/invalid-api-key': 'A chave pública do Firebase está incorreta. O responsável precisa revisar a configuração.',
+  'auth/configuration-not-found': 'O projeto Firebase não tem a configuração necessária para este método.',
+  'auth/internal-error': 'O serviço de autenticação apresentou um erro temporário. Tente novamente.',
+  'auth/missing-password': 'Digite sua senha para continuar.',
+  'auth/invalid-password': 'E-mail ou senha incorretos. Confira os dados e tente novamente.',
   'auth/account-exists-with-different-credential': 'Entre pelo método usado ao criar sua conta. Depois conecte o novo método em Minha conta.',
   'auth/credential-already-in-use': 'Esse método pertence a outra conta. Entre nessa conta para continuar.',
   'auth/invalid-verification-code': 'Código SMS incorreto. Confira os seis números.',
@@ -232,7 +239,10 @@ export function mountAuth(doc) {
     message();
     controls();
     try { await action(); }
-    catch (error) { message(error.publicMessage || errors[error.code] || 'Não foi possível concluir. Confira a conexão e tente novamente.', true); }
+    catch (error) {
+      const code = typeof error?.code === 'string' && /^auth\/[a-z0-9-]{1,64}$/.test(error.code) ? error.code : '';
+      message(error?.publicMessage || errors[code] || (code ? `Falha no acesso (${code}). Confira as configurações do Firebase.` : 'Não foi possível concluir. Confira a conexão e tente novamente.'), true);
+    }
     finally { busy = false; controls(); }
   }
 
@@ -286,7 +296,13 @@ export function mountAuth(doc) {
         await finish(await client.completeEmailLink(email), 'Seu acesso foi confirmado.');
       } else if (submittedMode === 'signup') {
         const result = await client.signup(email, password, name);
-        await finish(result, client.requiresCode ? 'Confirme o código para concluir.' : result.verificationSent === false ? 'Conta criada. Reenvie a confirmação de e-mail abaixo.' : 'Conta criada. Confirme seu e-mail pelo link enviado.');
+        const confirmation = client.requiresCode ? 'Confirme o código para concluir.'
+          : result.verificationSent === false && ['auth/unauthorized-continue-uri','auth/unauthorized-domain'].includes(result.verificationErrorCode)
+            ? 'Conta criada, mas não foi possível enviar a confirmação: autorize este domínio no Firebase e use Reenviar confirmação.'
+            : result.verificationSent === false ? 'Conta criada, mas o e-mail de confirmação não foi enviado. Use Reenviar confirmação.'
+            : result.profileSaved === false ? 'Conta criada. Confirme seu e-mail; o nome do perfil poderá ser atualizado depois.'
+            : 'Conta criada. Confirme seu e-mail pelo link enviado.';
+        await finish(result, confirmation);
       } else await finish(await client.login(email, password), 'Você entrou na sua conta.');
       el('auth-password').value = '';
       el('auth-confirm').value = '';

@@ -17,8 +17,11 @@ try {
   } else {
     ui.unavailable('O acesso às contas ainda não foi ativado. Você pode continuar ouvindo sem uma conta.');
   }
-} catch {
-  ui.unavailable('O acesso às contas está indisponível no momento. Recarregue a página para tentar novamente.');
+} catch (error) {
+  const code = typeof error?.code === 'string' && /^auth\/[a-z0-9-]{1,64}$/.test(error.code) ? error.code : '';
+  ui.unavailable(code
+    ? `O Firebase não conseguiu iniciar (${code}). Confira a configuração e os domínios autorizados.`
+    : 'O acesso às contas está indisponível no momento. Confira sua conexão e recarregue a página para tentar novamente.');
 }
 
 })();

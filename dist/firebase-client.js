@@ -63,12 +63,13 @@ export async function createFirebaseClient(config, options = {}, dependencies = 
     login(email, password) { return sdk.signInWithEmailAndPassword(auth, email, password); },
     async signup(email, password, name) {
       const result = await sdk.createUserWithEmailAndPassword(auth, email, password);
-      let profileSaved = true, verificationSent = true;
+      let profileSaved = true, verificationSent = true, verificationErrorCode = '';
       try { await sdk.updateProfile(result.user, { displayName: name }); } catch { profileSaved = false; }
       if (!options.security?.requireEmailCode) {
-        try { await sdk.sendEmailVerification(result.user, actionSettings); } catch { verificationSent = false; }
+        try { await sdk.sendEmailVerification(result.user, actionSettings); }
+        catch (error) { verificationSent = false; verificationErrorCode = typeof error?.code === 'string' ? error.code : ''; }
       }
-      return { user: result.user, profileSaved, verificationSent };
+      return { user: result.user, profileSaved, verificationSent, verificationErrorCode };
     },
     google() { return sdk.signInWithPopup(auth, provider('google.com')); },
     oauth(id) { return sdk.signInWithPopup(auth, provider(id)); },
