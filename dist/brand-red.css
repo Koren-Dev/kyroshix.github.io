@@ -54,6 +54,10 @@ html[data-theme=dark] .player-play, html[data-theme=dark] .now-play,
 .related-track:hover { background: #f8eceb; }
 .channel-links > a, .channel-links > button, .reaction { color: #b00400; border-color: #f0c9c6; background: #fdf0ef; }
 .empty-state, .feature-empty { background: #f6f5f6; border-color: #e4e2e5; }
+.studio-app-launchers { display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:20px 0; }
+.studio-app-link { display:grid;gap:8px;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--text);text-decoration:none; }
+.studio-app-link span { color:var(--muted);font-size:14px; }
+.studio-app-link b { color:var(--red);font-size:13px; }
 
 /* Dark theme: true black surfaces. */
 html[data-theme=dark] {
@@ -62,7 +66,8 @@ html[data-theme=dark] {
   --muted: #a7a7b0; --line: #2b2b31; --red: #ff3b2f; --ink: #ff3b2f;
   --waveform-start: #ff3b2f; --waveform-end: #6b0b06;
 }
-html[data-theme=dark] body { background: radial-gradient(ellipse at 20% 0, #2a0605, transparent 60%), #050506; }
+html[data-theme=dark] body { background: #050506; }
+html[data-theme=dark] body::before { background: none; }
 html[data-theme=dark] ::selection { color: #fff; background: var(--kx-red); }
 html[data-theme=dark] .icon-button.active, html[data-theme=dark] .icon-button[aria-pressed=true] { color: #ff4a3e; background: #2a0907; }
 html[data-theme=dark] .filters button.active { color: #fff; background: var(--kx-red); border-color: var(--kx-red); }

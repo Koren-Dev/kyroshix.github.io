@@ -19,7 +19,7 @@ let externalCalls=0;
 await assert.rejects(()=>resumableUpload({base,path:'tracks/test/a.wav',file,headers:async x=>x,errorFromResponse,fetcher:async()=>{externalCalls++;return new Response(null,{status:201,headers:{Location:'https://attacker.invalid/upload'}});}}),/inesperado/);assert.equal(externalCalls,1);
 let count=0;
 await assert.rejects(()=>resumableUpload({base,path:'tracks/test/a.wav',file,headers:async x=>x,errorFromResponse,fetcher:async()=>++count===1?new Response(null,{status:201,headers:{Location:url}}):new Response('{}',{status:403})}),/403/);assert.equal(count,2);
-assert.equal(audioExtension({name:'Original.FLAC'}),'flac');assert.match(downloadName({title:'Faixa',audio_path:'tracks/a/b.flac'}),/\.flac$/);
+assert.equal(audioExtension({name:'Original.FLAC'}),'flac');assert.equal(audioExtension({audio_path:'https://cdn.example.com/music/song.ogg?token=1'}),'ogg');assert.match(downloadName({title:'Faixa',audio_path:'tracks/a/b.flac'}),/\.flac$/);
 let filter,configured,tokenReads=0,config={drmEnabled:true,licenseAuth:'firebase',licenseServers:{'com.widevine.alpha':base+'/functions/v1/drm-license'}};
 const player={getNetworkingEngine:()=>({registerRequestFilter:fn=>filter=fn}),configure:c=>configured=c};
 const shaka={Player:{probeSupport:async()=>({drm:{'com.widevine.alpha':{}}})},net:{NetworkingEngine:{RequestType:{LICENSE:2,SEGMENT:1}}}};

@@ -105,6 +105,14 @@ const {PGlite}=require(process.env.KRS_TEST_NODE_MODULES?path.join(process.env.K
 
  await db.exec('reset role');
  for(let i=0;i<2;i++)await db.exec(fs.readFileSync(path.join(__dirname,'../backend/09-media-upgrade.sql'),'utf8'));
+ await db.exec(fs.readFileSync(path.join(__dirname,'../backend/10-external-audio-links.sql'),'utf8'));
+ const linked={id:'linked-music',title:'Linked track',artists:'Artist',remix:'Original',tags:['remix'],duration:0,audio_path:'https://cdn.example.com/music/track.mp3?token=public',cover_path:'',byte_size:0};
+ await as(claim('alice'));await denied('select public.krs_save_track($1)',[linked]);
+ await as(claim('owner'));await db.query('select public.krs_save_track($1)',[linked]);
+ assert.equal((await scalar('select audio_path from public.krs_tracks where id=$1',[linked.id])).audio_path,linked.audio_path);
+ for(const unsafe of ['http://cdn.example.com/track.mp3','javascript:alert(1)','https://user:pass@cdn.example.com/track.mp3','https://localhost/track.mp3','https://192.168.1.10/track.mp3','https://x.local/track.mp3','https://x.internal/track.mp3'])await denied('select public.krs_save_track($1)',[{...linked,id:'bad-link',audio_path:unsafe}]);
+ console.log('PASS: owner-only public HTTPS audio links; rejects insecure schemes, credentials, local/private hosts and malformed hostnames.');
+ await db.exec('reset role');
  assert.equal(Number((await scalar("select file_size_limit from storage.buckets where id='kyroshix-media'")).file_size_limit),52428800);
  await as(claim('alice'));
  await db.query('insert into storage.objects(bucket_id,name,metadata) values ($1,$2,$3) on conflict(bucket_id,name) do update set metadata=excluded.metadata',['kyroshix-media','profiles/alice/avatar.webp',{mimetype:'image/webp',contentLength:8388608}]);
